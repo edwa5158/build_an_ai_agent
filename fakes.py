@@ -1,7 +1,9 @@
 
 class FakeMetadata():
-    prompt_token_count: int = 0
-    candidates_token_count: int = 0
+    def __init__(self):
+        self.prompt_token_count: int = 0
+        self.candidates_token_count: int = 0
+
 
 class FakeResponse():
     def __init__(self, prompt_token_count: int = 0, candidates_token_count: int = 0, response_text: str = "fake response"):
@@ -9,4 +11,3 @@ class FakeResponse():
         self.usage_metadata.prompt_token_count = prompt_token_count
         self.usage_metadata.candidates_token_count = candidates_token_count
         self.text = response_text
-

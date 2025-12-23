@@ -4,6 +4,7 @@ from google import genai
 from google.genai import types
 import argparse
 from fakes import FakeMetadata, FakeResponse
+from log_decorator import logger
 
 class ChatbotSettings():
     def __init__(self):
@@ -14,12 +15,17 @@ class ChatbotSettings():
             parser.add_argument("--debug", action="store_true", help="Skip the api call for debugging")
             return parser.parse_args()
         args = parse_inputs()
-        
+
         self.verbose = args.verbose
         self.debug_mode = args.debug
         self.user_prompt = args.user_prompt
+        
+        global debug_mode
+        global verbose
+        debug_mode = self.debug_mode
+        verbose = self.verbose
 
-        if self.verbose: 
+        if self.verbose or self.debug_mode: 
             print("\n" + "-"*50)
             print(f"verbose: {self.verbose}")
             print(f"debug_mode: {self.debug_mode}")
@@ -43,21 +49,23 @@ def gemini_client(debug_mode: bool = False):
         if not debug_mode:
             response = client.models.generate_content(model = model , contents = messages)
         else:
-            response = FakeResponse(prompt_token_count=69, candidates_token_count=96)
+            response = FakeResponse(prompt_token_count=69, candidates_token_count=96, response_text="fake response")
         return response
     return gemini_response
 
 def main():
     settings = ChatbotSettings()
-
+    gemini = logger(settings.debug_mode, settings.verbose)(gemini_client)
     messages = [types.Content(role="user", parts=[types.Part(text=settings.user_prompt)])]
-    response = gemini_client(settings.debug_mode)(messages=messages)
-    
-    if (response.usage_metadata is not None) and settings.verbose:
+
+    response = gemini(settings.debug_mode)(messages=messages)
+
+    if response.usage_metadata is None:
+        raise RuntimeError("the response did not contain usage metadata (likely a failed API request)")
+    elif settings.verbose:
         print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
         print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
-    else:
-        raise RuntimeError("the response did not contain usage metadata (likely a failed API request)")
+        
     print(response.text)
 
 if __name__ == "__main__":
