@@ -10,10 +10,7 @@ def run_all_tests():
         test_get_file_content.main,
         test_write_file.main,
     ]
-    result: str = ""
-    for func in test_modules:
-        result += "\n\n" + func()
-    
+    result: str = "\n\n".join([func() for func in test_modules])
     print(result)
 
 if __name__ == "__main__":
