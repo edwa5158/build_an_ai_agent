@@ -8,7 +8,7 @@ def run_all_tests():
     test_modules: list[Callable] = [
         test_get_files_info.main,
         test_get_file_content.main,
-        test_get_files_info.main,
+        test_write_file.main,
     ]
     result: str = ""
     for func in test_modules:
