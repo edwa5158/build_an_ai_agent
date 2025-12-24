@@ -1,4 +1,4 @@
-from test_utils import run_test_cases
+from tests.test_utils import run_test_cases
 from functions.get_file_content import get_file_content
     
 def main()->str:

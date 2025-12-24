@@ -1,9 +1,7 @@
 from typing import Callable
 
 def run_all_tests():
-    import test_get_file_content
-    import test_get_files_info
-    import test_write_file
+    from tests import test_get_file_content, test_get_files_info, test_write_file
 
     test_modules: list[Callable] = [
         test_get_files_info.main,

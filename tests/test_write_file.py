@@ -1,8 +1,7 @@
-from test_utils import run_test_cases
+from tests.test_utils import run_test_cases
 from functions.write_file import write_file
 
 def main()->str:
-    from functions.write_file import write_file
     test_cases:list[tuple[str,str, str]] = [
         ("calculator", "lorem.txt", "wait, this isn't lorem ipsum"),
         ("calculator", "pkg/morelorem.txt", "lorem ipsum dolor sit amet"),
