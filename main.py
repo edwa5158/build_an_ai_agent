@@ -17,13 +17,8 @@ class ChatbotSettings():
         args = parse_inputs()
 
         self.verbose = args.verbose
-        self.debug_mode = args.debug
+        self.debug_mode = True # args.debug
         self.user_prompt = args.user_prompt
-        
-        global debug_mode
-        global verbose
-        debug_mode = self.debug_mode
-        verbose = self.verbose
 
         if self.verbose or self.debug_mode: 
             print("\n" + "-"*50)
@@ -63,6 +58,7 @@ def main():
     if response.usage_metadata is None:
         raise RuntimeError("the response did not contain usage metadata (likely a failed API request)")
     elif settings.verbose:
+        print(f"User prompt: {settings.user_prompt}")
         print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
         print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
         
