@@ -27,14 +27,14 @@ class ChatbotSettings():
             print(f"user_prompt: {self.user_prompt}")
             print("-"*50 + "\n")
 
-def get_api_key():
-    load_dotenv()
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if api_key is None:
-        raise RuntimeError("api key not found")
-    return api_key
-
 def gemini_client(debug_mode: bool = False):
+    def get_api_key():
+        load_dotenv()
+        api_key = os.environ.get("GEMINI_API_KEY")
+        if api_key is None:
+            raise RuntimeError("api key not found")
+        return api_key
+    
     model = "gemini-2.5-flash"
     key = get_api_key()
     if not debug_mode:
