@@ -1,5 +1,5 @@
 import os
-from functions.get_files_info import validate_directory_path
+from functions.function_utils import validate_directory_path
 
 def write_file(working_directory, file_path, content):
     try:

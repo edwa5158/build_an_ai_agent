@@ -9,3 +9,6 @@ dependencies = [
     "google-genai==1.12.1",
     "python-dotenv==1.1.0",
 ]
+
+[project.scripts]
+test_run_python_file = "tests.test_run_python_file:main"

@@ -1,5 +1,5 @@
 import config
-from functions.get_files_info import validate_directory_path
+from functions.function_utils import validate_directory_path
 
 def get_file_content(working_directory, file_path):        
     try:
