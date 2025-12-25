@@ -1,6 +1,13 @@
+"""Convenience entry point to run the repository's functional tests."""
+
 from typing import Callable
 
 def run_all_tests():
+    """Execute all test modules and print a combined results report.
+
+    :return: None
+    :rtype: None
+    """
     from tests import test_get_file_content, test_get_files_info, test_write_file
 
     test_modules: list[Callable] = [

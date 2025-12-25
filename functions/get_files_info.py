@@ -1,8 +1,32 @@
+"""Contains the function `get_files_info` to list files/directories within a validated working directory."""
+
 import os
 from functions.function_utils import validate_directory_path
 
 
-def get_files_info(working_directory: str, directory: str = "."):
+def get_files_info(working_directory: str, directory: str = ".")->str:
+    """
+    Get information about files and directories in the specified directory.
+
+    :param working_directory: The root working directory to validate against
+    :type working_directory: str
+    :param directory: The directory path to list files from (default: current directory)
+    :type directory: str
+    :return: A formatted string containing file information or error message.
+
+        The string includes
+        - A header indicating the target directory
+        - For each file/directory:
+
+            - name
+            - file size in bytes
+            - if it's a directory
+
+        - Error messages if the directory is outside the permitted working directory
+        - Exception details if any error occurs during execution
+    :rtype: str
+    """
+
     try:
         target_dir, valid_target_dir, is_dir, _ = validate_directory_path(
             working_directory, directory
@@ -39,3 +63,4 @@ def get_files_info(working_directory: str, directory: str = "."):
 if __name__ == "__main__":
     result = get_files_info("calculator", "../")
     print(result)
+

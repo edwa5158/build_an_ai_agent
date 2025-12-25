@@ -1,7 +1,22 @@
+"""Shared helpers for the simple, print-based test harness used in this repo."""
+
 from typing import Callable
 
 # I wanted to truncate this, but some of the test cases look for stuff in the middle of the file...
 def append_test_case_result(case_num: int, result: str, case: tuple[str, str], actual: str)->str:
+    """Append a single test case's inputs and output to the running report.
+
+    :param case_num: The 1-based index of the test case being appended.
+    :type case_num: int
+    :param result: The report string built so far.
+    :type result: str
+    :param case: The inputs tuple used to call the tested function.
+    :type case: tuple[str, str]
+    :param actual: The raw output returned by the tested function.
+    :type actual: str
+    :return: Updated report string including the new test case section.
+    :rtype: str
+    """
     new_result: str = result
     new_result = "\n".join([new_result, "\n" + "-"*10 + f"Test Case: {case_num}" + "-"*10])
     new_result = "\n".join([new_result, f"Inputs: {case}"])
@@ -10,6 +25,17 @@ def append_test_case_result(case_num: int, result: str, case: tuple[str, str], a
 
 
 def run_test_cases(test_cases:list[tuple], expect_to_find: list[str], func: Callable)->str:
+    """Run multiple test cases and summarize whether expected substrings appear.
+
+    :param test_cases: Positional-argument tuples used to call `func`.
+    :type test_cases: list[tuple]
+    :param expect_to_find: Substrings expected to appear somewhere in the combined report.
+    :type expect_to_find: list[str]
+    :param func: The function under test.
+    :type func: Callable
+    :return: A human-readable report containing per-case output and a pass/fail summary.
+    :rtype: str
+    """
     case_num:int = 0
     result: str = "\n\n" + "*"*30 + f" TESTING `{func.__name__}` " + "*"*30
 

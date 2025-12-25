@@ -1,7 +1,19 @@
+"""Contains the function `get_file_content` to read file contents from within a validated working directory."""
+
 import config
 from functions.function_utils import validate_directory_path
 
-def get_file_content(working_directory, file_path):        
+def get_file_content(working_directory: str, file_path: str)-> str:
+    """
+    Reads and returns the content of a file within a permitted working directory.
+    
+    :param working_directory: The base working directory path to validate against
+    :type working_directory: str
+    :param file_path: The path of the file to read
+    :type file_path: str
+    :return: The file content (truncated if exceeds 10,000 characters) or an error message
+    :rtype: str
+    """
     try:
         target_dir, valid_target_dir, is_dir, is_file = validate_directory_path(working_directory, file_path)
 

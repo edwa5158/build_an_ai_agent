@@ -1,3 +1,5 @@
+"""Shared utility helpers for function implementations."""
+
 import os 
 
 def validate_directory_path(working_directory: str, directory: str)->tuple[str, bool, bool, bool]:
@@ -8,10 +10,11 @@ def validate_directory_path(working_directory: str, directory: str)->tuple[str, 
     :type working_directory: str
     :param directory: The directory (or file name) to search for in the `working_directory`
     :type directory: str
-    :return: 
-            - `target_dir` - the absolute path to the specified `directory` in `working_directory`\n
-            - `valid_taret_dir` - if the `directory` is within the `working_directory`\n
-            - `is_dir` - if `directory` is a directory (False if `target_is_valid` = False)\n
+    :return: A tuple containing basic info about the file / directory and if it's valid.
+
+            - `target_dir` - the absolute path to the specified `directory` in `working_directory`
+            - `valid_taret_dir` - if the `directory` is within the `working_directory`
+            - `is_dir` - if `directory` is a directory (False if `target_is_valid` = False)
             - `is_file` - if `directory` is a file (False if `target_is_valid` = False)
     :rtype: tuple[str, bool, bool, bool]
     """
