@@ -3,9 +3,10 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 import argparse
-from fakes import FakeMetadata, FakeResponse
-from log_decorator import logger
+from fakes import FakeResponse
+from log_decorator import logger, set_log_options
 from prompts import system_prompt
+from functions.available_functions import available_functions
 
 
 class ChatbotSettings:
@@ -27,6 +28,7 @@ class ChatbotSettings:
         self.debug_mode = args.debug
         self.user_prompt = args.user_prompt
 
+        set_log_options(debug_mode=self.debug_mode, verbose=self.verbose)
         if self.verbose or self.debug_mode:
             print("\n" + "-" * 50)
             print(f"verbose: {self.verbose}")
@@ -35,6 +37,7 @@ class ChatbotSettings:
             print("-" * 50 + "\n")
 
 
+@logger()
 def gemini_client(debug_mode: bool = False):
     def get_api_key():
         load_dotenv()
@@ -43,17 +46,19 @@ def gemini_client(debug_mode: bool = False):
             raise RuntimeError("api key not found")
         return api_key
 
-    model = "gemini-2.5-flash-lite"
     key = get_api_key()
     if not debug_mode:
         client = genai.Client(api_key=key)
 
-    def gemini_response(messages: list[types.Content]):
+    @logger()
+    def gemini_response(prompt: str, model: str):
+        messages = [
+            types.Content(role="user", parts=[types.Part(text=prompt)])
+        ]
+        config = types.GenerateContentConfig(
+            tools=[available_functions], system_instruction=system_prompt
+        )
         if not debug_mode:
-            # print("Not running in debug mode.")
-            # print(system_prompt)
-            config=types.GenerateContentConfig(system_instruction=system_prompt)
-            # print(f"config.system_instruction: {config.system_instruction}")
             response = client.models.generate_content(
                 model=model,
                 contents=messages,
@@ -74,26 +79,29 @@ def gemini_client(debug_mode: bool = False):
 
 def main():
     settings = ChatbotSettings()
-    messages = [
-        types.Content(role="user", parts=[types.Part(text=settings.user_prompt)])
-    ]
+    model = "gemini-2.5-flash-lite"
+    responder = gemini_client(settings.debug_mode)
+    result: str = "\n\n"
+    response = responder(settings.user_prompt, model)
 
-    # gemini = logger(settings.debug_mode, settings.verbose)(gemini_client)
-    # response = gemini(settings.debug_mode)(messages=messages)
-    response = gemini_client(settings.debug_mode)(messages)
-     
-    if response is None or response.usage_metadata is None:
+    if (response is None) or (response.usage_metadata is None):
         raise RuntimeError(
             "the response did not contain usage metadata (likely a failed API request)"
         )
-        
+
     else:
         if settings.verbose:
             print(f"User prompt: {settings.user_prompt}")
             print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
             print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
 
-        print(f"RESPONSE: {response.text}")
+        result += f"RESPONSE: {response.text}"
+        result += "\n\nFUNCTION CALLS: "
+        if response.function_calls:
+            for function_call in response.function_calls:
+                result += f"\n\t{function_call.name}({function_call.args})"
+
+        print(result)
 
 if __name__ == "__main__":
     main()
