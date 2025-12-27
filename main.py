@@ -1,12 +1,14 @@
+import argparse
 import os
+
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
-import argparse
+
 from fakes import FakeResponse
+from functions.call_function import available_functions, call_function
 from log_decorator import logger, set_log_options
 from prompts import system_prompt
-from functions.call_function import available_functions
 
 
 class ChatbotSettings:
@@ -52,9 +54,7 @@ def gemini_client(debug_mode: bool = False):
 
     @logger()
     def gemini_response(prompt: str, model: str):
-        messages = [
-            types.Content(role="user", parts=[types.Part(text=prompt)])
-        ]
+        messages = [types.Content(role="user", parts=[types.Part(text=prompt)])]
         config = types.GenerateContentConfig(
             tools=[available_functions], system_instruction=system_prompt
         )
@@ -96,11 +96,33 @@ def main():
 
         result += f"RESPONSE: {response.text}"
         result += "\n\nFUNCTION CALLS: "
-        if response.function_calls:
-            for function_call in response.function_calls:
-                result += f"\n\t{function_call.name}({function_call.args})"
+        function_results = []
+        if not response.function_calls:
+            print(result)
+            return result
+
+        for function_call in response.function_calls:
+            function_call_result: types.Content = call_function(
+                function_call, settings.verbose
+            )
+            parts = function_call_result.parts 
+            if not parts:
+                raise Exception(
+                    f"Function call missing expected result parts for: {function_call.name}({function_call.args})"
+                )
+            function_response = parts[0].function_response.response if parts[0].function_response else None
+            if not function_response:
+                raise Exception(
+                    f"Function call `{function_call.name}({function_call.args})` has no response."
+                )
+
+            function_results.append(parts[0])
+            if settings.verbose:
+                result += f"\n\t{function_response}"
 
         print(result)
+        return result
+
 
 if __name__ == "__main__":
     main()

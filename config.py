@@ -1,1 +1,2 @@
 MAX_CHARACTERS_TO_READ: int = 10_000
+WORKING_DIRECOTRY: str = "./calculator"
