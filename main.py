@@ -6,7 +6,7 @@ import argparse
 from fakes import FakeResponse
 from log_decorator import logger, set_log_options
 from prompts import system_prompt
-from functions.available_functions import available_functions
+from functions.call_function import available_functions
 
 
 class ChatbotSettings:
@@ -64,7 +64,6 @@ def gemini_client(debug_mode: bool = False):
                 contents=messages,
                 config=config,
             )
-            # response = None
         else:
             print("Running in DEBUG mode.")
             response = FakeResponse(
