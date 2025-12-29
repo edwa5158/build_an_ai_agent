@@ -3,7 +3,7 @@ import os
 
 from dotenv import load_dotenv
 
-from log_decorator import logger, set_log_options
+from log_decorator import logger
 
 MAX_CHARACTERS_TO_READ: int = 10_000
 WORKING_DIRECOTRY: str = "./calculator"
@@ -11,7 +11,7 @@ MAX_ITERATIONS: int = 20
 
 
 @logger()
-def get_api_key()->str:
+def get_api_key() -> str:
     load_dotenv()
     api_key: str | None = os.environ.get("GEMINI_API_KEY")
     if api_key is None:
@@ -35,7 +35,6 @@ class ChatbotSettings:
         self.user_prompt = args.user_prompt
         self.model = "gemini-2.5-flash"
         self.api_key: str = get_api_key()
-        set_log_options(verbose=self.verbose)
         if self.verbose:
             print("\n" + "-" * 50)
             print(f"verbose: {self.verbose}")

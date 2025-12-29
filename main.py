@@ -1,5 +1,3 @@
-import json
-
 from google import genai
 from google.genai import types
 
@@ -22,17 +20,12 @@ def main() -> str:
         response: types.GenerateContentResponse = gemini.generate_content(
             client, settings, messages
         )
-        with open("response.json", "wt", encoding="utf-8") as f:
-            json.dump(response.to_json_dict(), f, indent=2)
 
         has_text = response.text is not None
         has_new_messages, messages = gemini.update_messages(
             response, settings, messages
         )
 
-        with open("messages.json", "wt", encoding="utf-8") as f:
-            json.dump([message.to_json_dict() for message in messages], f)
-    
         print(f"iteration: {iteration}")
         print(f"response.text: {response.text}")
         print(f"function_calls: {response.function_calls}")
