@@ -1,15 +1,18 @@
 """Safely execute Python files located within a validated working directory."""
 
-from functions.function_utils import validate_directory_path
 import subprocess
 
+from functions.function_utils import validate_directory_path
+from log_decorator import logger
 
+
+@logger()
 def run_python_file(
     working_directory: str, file_path: str, args: list[str] | None = None
 ) -> str:
     """
     Execute a Python file with optional arguments.
-    
+
     :param working_directory: The base working directory for file validation
     :type working_directory: str
     :param file_path: The path to the Python file to execute
@@ -55,6 +58,7 @@ def run_python_file(
     except Exception as e:
         return f"Error: {e}"
 
+
 def __parse_inputs__():
     """Parse CLI arguments for the `run_python_file` module.
 
@@ -62,6 +66,7 @@ def __parse_inputs__():
     :rtype: argparse.Namespace
     """
     import argparse
+
     parser = argparse.ArgumentParser(description="run_python_file")
     parser.add_argument("working_dir", type=str, help="Working directory")
     parser.add_argument("file_path", type=str, help="Python file to run")
@@ -73,7 +78,7 @@ def __parse_inputs__():
     )
     return parser.parse_args()
 
+
 if __name__ == "__main__":
     args = __parse_inputs__()
     print(run_python_file(args.working_dir, args.file_path, args.args))
-

@@ -7,6 +7,7 @@ from log_decorator import logger, set_log_options
 
 MAX_CHARACTERS_TO_READ: int = 10_000
 WORKING_DIRECOTRY: str = "./calculator"
+MAX_ITERATIONS: int = 20
 
 
 @logger()
@@ -32,7 +33,7 @@ class ChatbotSettings:
 
         self.verbose = args.verbose
         self.user_prompt = args.user_prompt
-        self.model = "gemini-2.5-flash-lite"
+        self.model = "gemini-2.5-flash"
         self.api_key: str = get_api_key()
         set_log_options(verbose=self.verbose)
         if self.verbose:

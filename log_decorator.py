@@ -15,7 +15,7 @@ _LOG_OPTIONS: contextvars.ContextVar[LogOptions] = contextvars.ContextVar(
 
 
 def set_log_options(*, verbose: bool = False) -> None:
-    _LOG_OPTIONS.set(LogOptions( verbose))
+    _LOG_OPTIONS.set(LogOptions(verbose))
 
 
 def get_log_options() -> LogOptions:

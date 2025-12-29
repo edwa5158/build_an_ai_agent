@@ -22,13 +22,16 @@ available_functions = types.Tool(
     ],
 )
 from typing import Callable
+
 from config import WORKING_DIRECOTRY
 from functions.get_file_content import get_file_content
 from functions.get_files_info import get_files_info
 from functions.run_python_file import run_python_file
 from functions.write_file import write_file
+from log_decorator import logger
 
 
+@logger()
 def call_function(function_call: types.FunctionCall, verbose: bool = False):
 
     if verbose:
@@ -63,8 +66,7 @@ def call_function(function_call: types.FunctionCall, verbose: bool = False):
         role="tool",
         parts=[
             types.Part.from_function_response(
-                name=function_name,
-                response={"result": function_result}
+                name=function_name, response={"result": function_result}
             )
-        ]
+        ],
     )

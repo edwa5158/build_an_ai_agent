@@ -1,17 +1,47 @@
+import json
+
 from google import genai
 from google.genai import types
 
-from config import ChatbotSettings
-from gemini import gemini_client, gemini_response, handle_response
+import gemini
+from config import MAX_ITERATIONS, ChatbotSettings
 
 
 def main() -> str:
     settings = ChatbotSettings()
+    messages: list[types.Content] = [
+        types.Content(role="user", parts=[types.Part(text=settings.user_prompt)])
+    ]
+    client: genai.Client = gemini.client(settings)
+    has_new_messages = True
+    iteration: int = 1
+    has_text: bool = False
+    result: str = ""
+    while has_new_messages and not has_text and iteration < MAX_ITERATIONS:
 
-    client: genai.Client = gemini_client(settings)
-    response: types.GenerateContentResponse = gemini_response(client, settings)
-    result: str = handle_response(response, settings)
+        response: types.GenerateContentResponse = gemini.generate_content(
+            client, settings, messages
+        )
+        with open("response.json", "wt", encoding="utf-8") as f:
+            json.dump(response.to_json_dict(), f, indent=2)
 
+        has_text = response.text is not None
+        has_new_messages, messages = gemini.update_messages(
+            response, settings, messages
+        )
+
+        with open("messages.json", "wt", encoding="utf-8") as f:
+            json.dump([message.to_json_dict() for message in messages], f)
+    
+        print(f"iteration: {iteration}")
+        print(f"response.text: {response.text}")
+        print(f"function_calls: {response.function_calls}")
+        print(f"has_new_messages: {has_new_messages}")
+        iteration += 1
+
+    print(f"loop eneded on iteration: {iteration - 1}")
+    result += gemini.handle_response(response, settings)
+    print(result)
     return result
 
 

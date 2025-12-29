@@ -1,10 +1,13 @@
 """Contains the function `get_files_info` to list files/directories within a validated working directory."""
 
 import os
+
 from functions.function_utils import validate_directory_path
+from log_decorator import logger
 
 
-def get_files_info(working_directory: str, directory: str = ".")->str:
+@logger()
+def get_files_info(working_directory: str, directory: str = ".") -> str:
     """
     Get information about files and directories in the specified directory.
 
@@ -63,4 +66,3 @@ def get_files_info(working_directory: str, directory: str = ".")->str:
 if __name__ == "__main__":
     result = get_files_info("calculator", "../")
     print(result)
-
