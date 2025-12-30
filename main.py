@@ -1,3 +1,7 @@
+import warnings
+
+warnings.filterwarnings("ignore", message=r".*non-text parts.*")
+
 from google import genai
 from google.genai import types
 
